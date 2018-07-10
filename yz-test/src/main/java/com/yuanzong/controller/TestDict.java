@@ -3,6 +3,7 @@ package com.yuanzong.controller;
 import com.yuanzong.beans.*;
 import com.yuanzong.utils.HtmlUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -54,7 +55,7 @@ public class TestDict
                 List<Element> explanationList = rootElement.elements("n-g");
                 List<Element> elements = rootElement.elements("sl-g");
 
-                if (explanationList == null && explanationBeanList.size() == 0)
+                if (explanationList == null || explanationList.size() == 0)
                 {
 
                     List<ExplanationBean> parse = parse(elements, explanationBeanList);
@@ -82,6 +83,17 @@ public class TestDict
                     }
                     parseBean.explanationBeanList = explanationBeanList;
                 }
+                Element xr = rootElement.element("xr");
+                if(xr !=null){
+                    String xh = xr.element("xh").getTextTrim();
+                    parseBean.note = xh;
+                }
+                Element vsG = rootElement.element("vs-g");
+                if(vsG !=null){
+                    String v = vsG.element("v").getTextTrim();
+                    parseBean.shaped = v;
+                }
+
                 HtmlUtils.recordInsertSql(parseBean);
             }
         }
@@ -93,7 +105,7 @@ public class TestDict
 
         try
         {
-            FileUtils.writeLines(new File("D:\\Download\\3.sql"), HtmlUtils.sql);
+            FileUtils.writeLines(new File("D:\\Download\\3.sql"), HtmlUtils.sql,false);
         }
         catch (IOException e)
         {
@@ -140,9 +152,14 @@ public class TestDict
                 {
                     Section section = new Section();
                     String english = element.getTextTrim();
-                    String chinese = element.element("chn").getTextTrim();
                     section.english = english;
-                    section.chinese = chinese;
+
+                    Element chn = element.element("chn");
+                    if(chn!=null){
+                        String chinese =  chn.getTextTrim();
+                        section.chinese = chinese;
+                    }
+
                     sectionList.add(section);
                 }
                 speechDetailBean.englishExplanation = englishExplanation;

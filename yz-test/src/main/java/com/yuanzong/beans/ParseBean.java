@@ -17,6 +17,8 @@ public class ParseBean{
      */
     public String  partOfSpeech;
 
+    public String note;
+
     public List<ExplanationBean> explanationBeanList;
 
 }

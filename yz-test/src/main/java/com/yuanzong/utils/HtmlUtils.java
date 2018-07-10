@@ -38,6 +38,7 @@ import java.util.List;
  * <font face="serif"><i >I secretly envied her for her good looks.</i></font>
  * <span>我暗暗羡慕她姣好的面容。</span>
  * </p>
+ *
  */
 public class HtmlUtils
 {
@@ -51,7 +52,18 @@ public class HtmlUtils
         StringBuilder p = new StringBuilder(1024);
         fillTitle(p, word);
         fillBody(p, word.explanationBeanList);
+        fillNote(p, word.note);
         return p.toString();
+    }
+
+    private static void fillNote(StringBuilder p, String note)
+    {
+        if(note == null){
+            return;
+        }
+        p.append("<p>⇨Note at ");
+        p.append(note);
+        p.append("</p>");
     }
 
     public static String recordInsertSql(ParseBean word)
@@ -62,7 +74,7 @@ public class HtmlUtils
         }
         String name = word.name;
         String html = getHtml(word);
-
+        System.out.println(html);
         String sql =  "insert into dict_oxford_ec (`key`,`value`)values ('" + name +"','" +html.replace("'","''")+ "')";
         HtmlUtils.sql.add(sql);
         return sql;
@@ -140,9 +152,11 @@ public class HtmlUtils
             {
                 BaseBean baseBean = baseBeanList.get(i);
                 p.append("<p>&nbsp;&nbsp;");
-                p.append("<font face=\"serif\">•");
-                p.append(baseBean.speech);
-                p.append(".</font>");
+                if(baseBean.speech !=null){
+                    p.append("<font face=\"serif\">•");
+                    p.append(baseBean.speech);
+                    p.append(".</font>");
+                }
                 fillSpeechDetailBean(p, baseBean.speechDetailBeans);
                 p.append("</p>");
             }
@@ -157,11 +171,19 @@ public class HtmlUtils
             for (int i = 0; i < explanationBeanList.size(); i++)
             {
                 ExplanationBean explanationBean = explanationBeanList.get(i);
-                p.append("<font face=\"san-serif\"><b>");
-                p.append(i + 1);
-                p.append("</b>");
-                p.append(explanationBean.englishPhrase);
-                p.append(explanationBean.chinesePhrase);
+                p.append("<font face=\"san-serif\">" );
+                if(explanationBeanList.size() > 1){
+                    p.append("<b>");
+                    p.append(i + 1);
+                    p.append("</b>");
+                }
+
+                if(explanationBean.englishPhrase!=null){
+                    p.append(explanationBean.englishPhrase);
+                }
+                if(explanationBean.chinesePhrase!=null){
+                    p.append(explanationBean.chinesePhrase);
+                }
                 p.append("</font>");
                 fillBaseBean(p, explanationBean.baseBeanList);
             }
