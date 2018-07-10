@@ -1,12 +1,9 @@
 package com.yuanzong.controller;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
-import org.dom4j.Attribute;
+import com.yuanzong.beans.*;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import sun.security.ec.ECDSASignature;
 
 import java.io.File;
 import java.util.*;
@@ -50,7 +47,7 @@ public class TestDict {
                     }
 
 
-                    singleBeanMap.put(sl,)
+//                    singleBeanMap.put(sl,)
                 }
 
             }
@@ -63,117 +60,3 @@ public class TestDict {
 }
 
 
-class ParseBean{
-    /**
-     * 异型词
-     */
-    String Shaped;
-    /**
-     * 单词词性
-     */
-    String  partOfSpeech;
-
-    List<ExplanationBean> explanationBeanList;
-
-    public String getShaped() {
-        return Shaped;
-    }
-
-    public void setShaped(String shaped) {
-        Shaped = shaped;
-    }
-
-    public String getPartOfSpeech() {
-        return partOfSpeech;
-    }
-
-    public void setPartOfSpeech(String partOfSpeech) {
-        this.partOfSpeech = partOfSpeech;
-    }
-
-    public List<ExplanationBean> getExplanationBeanList() {
-        return explanationBeanList;
-    }
-
-    public void setExplanationBeanList(List<ExplanationBean> explanationBeanList) {
-        this.explanationBeanList = explanationBeanList;
-    }
-}
-
-class ExplanationBean{
-    /**
-     * 简单的英语短语解释
-     */
-    String englishPhrase;
-    /**
-     * 英文短语翻译
-     */
-    String chinesePhrase;
-    /**
-     * map<搭配的词性,bean>
-     */
-    Map<String,BaseBean> baseBeanList;
-
-    public String getEnglishPhrase() {
-        return englishPhrase;
-    }
-
-    public void setEnglishPhrase(String englishPhrase) {
-        this.englishPhrase = englishPhrase;
-    }
-
-    public String getChinesePhrase() {
-        return chinesePhrase;
-    }
-
-    public void setChinesePhrase(String chinesePhrase) {
-        this.chinesePhrase = chinesePhrase;
-    }
-
-    public Map<String, BaseBean> getBaseBeanList() {
-        return baseBeanList;
-    }
-
-    public void setBaseBeanList(Map<String, BaseBean> baseBeanList) {
-        this.baseBeanList = baseBeanList;
-    }
-}
-
-class BaseBean{
-    /**
-     * 英文单词解释
-     */
-    List<String> englishExplanation;
-    /**
-     * 中文单词解释
-     */
-    List<String> chineseExplanation;
-    /**
-     * 例句map<英语例句，中文翻译>
-     */
-    Map<String,String> exampleExplanation;
-
-    public List<String> getEnglishExplanation() {
-        return englishExplanation;
-    }
-
-    public void setEnglishExplanation(List<String> englishExplanation) {
-        this.englishExplanation = englishExplanation;
-    }
-
-    public List<String> getChineseExplanation() {
-        return chineseExplanation;
-    }
-
-    public void setChineseExplanation(List<String> chineseExplanation) {
-        this.chineseExplanation = chineseExplanation;
-    }
-
-    public Map<String, String> getExampleExplanation() {
-        return exampleExplanation;
-    }
-
-    public void setExampleExplanation(Map<String, String> exampleExplanation) {
-        this.exampleExplanation = exampleExplanation;
-    }
-}
