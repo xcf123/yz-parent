@@ -35,7 +35,7 @@ public class TestDict
                     continue;
                 }
                 s = HtmlUtils.unespace(s);
-
+                System.out.println(s);
                 ParseBean parseBean = new ParseBean();
                 //读取xml文件到Document中
                 Document doc = DocumentHelper.parseText(s);
@@ -85,13 +85,14 @@ public class TestDict
                 }
                 Element xr = rootElement.element("xr");
                 if(xr !=null){
-                    String xh = xr.element("xh").getTextTrim();
-                    parseBean.note = xh;
+                    parseBean.note = xr.element("xh").getTextTrim();
                 }
                 Element vsG = rootElement.element("vs-g");
                 if(vsG !=null){
-                    String v = vsG.element("v").getTextTrim();
-                    parseBean.shaped = v;
+                    Element v1 = vsG.element("v");
+                    if(v1!=null){
+                        parseBean.shaped = v1.getTextTrim();
+                    }
                 }
 
                 HtmlUtils.recordInsertSql(parseBean);
