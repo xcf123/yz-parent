@@ -9,33 +9,33 @@ import java.util.List;
 /**
  * 用于拼接解释
  * <p>
- *     <font><big>envy</big></font>(also <font>invy</font> )
- *     <small>verb</small>
+ * <font><big>envy</big></font>(also <font>invy</font> )
+ * <small>verb</small>
  * </p>
  * <font face="san-serif"><b>1</b> strong feeling of dislike 羡慕</font>
  * <p>
- *     &nbsp;&nbsp;
- *     <font face="serif">•ADV.</font>
+ * &nbsp;&nbsp;
+ * <font face="serif">•ADV.</font>
  *
- *     <b>greatly,really</b>
- *     <span>极为羡慕；十分羡慕</span>
+ * <b>greatly,really</b>
+ * <span>极为羡慕；十分羡慕</span>
  *
- *     <b>|</b>
+ * <b>|</b>
  *
- *     <b>secretly</b>
- *     <span>暗暗羡慕</span>
+ * <b>secretly</b>
+ * <span>暗暗羡慕</span>
  * </p>
  * <p>
- *     &nbsp;&nbsp;
- *     <font face="serif">•PREP.</font>
- *     <b>for</b>
- *     <span>羡慕···</span>
- *     <span>：</span>
- *     <font face="serif"><i >I secretly envied her for her good looks.</i></font>
- *     <span>我暗暗羡慕她姣好的面容。</span>
- *     ◇
- *     <font face="serif"><i >I secretly envied her for her good looks.</i></font>
- *     <span>我暗暗羡慕她姣好的面容。</span>
+ * &nbsp;&nbsp;
+ * <font face="serif">•PREP.</font>
+ * <b>for</b>
+ * <span>羡慕···</span>
+ * <span>：</span>
+ * <font face="serif"><i >I secretly envied her for her good looks.</i></font>
+ * <span>我暗暗羡慕她姣好的面容。</span>
+ * ◇
+ * <font face="serif"><i >I secretly envied her for her good looks.</i></font>
+ * <span>我暗暗羡慕她姣好的面容。</span>
  * </p>
  */
 public class HtmlUtils
@@ -60,12 +60,13 @@ public class HtmlUtils
         {
             for (int i = 0; i < speechDetailBeans.size(); i++)
             {
-                if(i != 0){
+                if (i != 0)
+                {
                     p.append("<b>┃</b>");
                 }
                 SpeechDetailBean speechDetailBean = speechDetailBeans.get(i);
                 p.append("<b>");
-                p.append(joinList(speechDetailBean.englishExplanation,","));
+                p.append(joinList(speechDetailBean.englishExplanation, ","));
                 p.append("</b>");
                 p.append("<span>");
                 p.append(speechDetailBean.chineseExplanation);
@@ -77,11 +78,13 @@ public class HtmlUtils
 
     private static void fillSection(StringBuilder p, List<Section> sectionList)
     {
-        if(sectionList != null){
+        if (sectionList != null)
+        {
             p.append("<span>：</span>");
             for (int i = 0; i < sectionList.size(); i++)
             {
-                if(i!=0){
+                if (i != 0)
+                {
                     p.append("◇");
                 }
                 p.append("<font face=\"serif\"><i >");
@@ -98,19 +101,20 @@ public class HtmlUtils
     {
 
         StringBuilder sb = new StringBuilder(64);
-        if(CollectionUtils.isEmpty(englishExplanation)){
+        if (CollectionUtils.isEmpty(englishExplanation))
+        {
             return sb;
         }
         for (int i = 0; i < englishExplanation.size(); i++)
         {
-            if(i!=0){
+            if (i != 0)
+            {
                 sb.append(s);
             }
             sb.append(englishExplanation.get(0));
         }
         return sb;
     }
-
 
 
     private static void fillBaseBean(StringBuilder p, List<BaseBean> baseBeanList)
@@ -121,15 +125,14 @@ public class HtmlUtils
             {
                 BaseBean baseBean = baseBeanList.get(i);
                 p.append("<p>&nbsp;&nbsp;");
-                p.append("<font face=\"serif\">•" );
-                p.append(baseBean.speech );
+                p.append("<font face=\"serif\">•");
+                p.append(baseBean.speech);
                 p.append(".</font>");
                 fillSpeechDetailBean(p, baseBean.speechDetailBeans);
                 p.append("</p>");
             }
         }
     }
-
 
 
     private static void fillBody(StringBuilder p, List<ExplanationBean> explanationBeanList)
@@ -140,7 +143,7 @@ public class HtmlUtils
             {
                 ExplanationBean explanationBean = explanationBeanList.get(i);
                 p.append("<font face=\"san-serif\"><b>");
-                p.append(i+1);
+                p.append(i + 1);
                 p.append("</b>");
                 p.append(explanationBean.englishPhrase);
                 p.append(explanationBean.chinesePhrase);
@@ -149,7 +152,6 @@ public class HtmlUtils
             }
         }
     }
-
 
 
     private static void fillTitle(StringBuilder p, ParseBean word)
@@ -170,4 +172,39 @@ public class HtmlUtils
         p.append("</p>");
     }
 
+    public static String unespace(String s)
+    {
+        return s.replace("&lsquo;", "‘")
+                .replace("&rsquo;", "’")
+                .replace("&hellip;", "…")
+                .replace("&cw;", "·")
+                .replace("&mdash;", "—")
+                .replace("&ndash;", "—")
+                .replace("&dash2;", "—")
+                .replace("&thinsp;", " ")
+                .replace("&dollar;", "$")
+                .replace("&pound;", "£")
+                .replace("&percnt;", "%")
+                .replace("&deg;", "°")
+                .replace("&eacute;", "É")
+                .replace("&trade;", "™")
+                .replace("&euro;", "€")
+                .replace("&ecirc;", "Ê")
+                .replace("&atilde;", "ã")
+                .replace("&check;", " ")
+                .replace("&egrave;", "è")
+                .replace("&euml;", "ë")
+                .replace("&acirc;", "Â")
+                .replace("&aacute;", "á")
+                .replace("&agrave;", "À")
+                .replace("&sub2;", "-")
+                .replace("&oacute;", "Ó")
+                .replace("&iuml;", "ï")
+                .replace("&ntilde;", "Ñ")
+                .replace("&iacute;", "í")
+                .replace("&Eacute;", "É")
+                .replace("&uuml;", "Ü")
+                .replace("&ugrave;", "ù")
+                .replace("&ocirc;", "Ô");
+    }
 }

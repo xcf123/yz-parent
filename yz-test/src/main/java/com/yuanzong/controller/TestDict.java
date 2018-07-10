@@ -3,14 +3,12 @@ package com.yuanzong.controller;
 import com.yuanzong.beans.*;
 import com.yuanzong.utils.HtmlUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
 import java.io.File;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,22 +33,8 @@ public class TestDict
                 {
                     continue;
                 }
-                System.out.println(s);
-                s = s.replace("&lsquo;","‘").replace("&rsquo;","’")
-                .replace("&hellip;","…")
-                .replace("&cw;","·")
-                .replace("&mdash;","—")
-                .replace("&ndash;","—")
-                .replace("&dash2;","—")
-                .replace("&thinsp;"," ")
-                .replace("&dollar;","$")
-                .replace("&pound;","£")
-                .replace("&percnt;","%")
-                .replace("&deg;","°")
-                .replace("&eacute;","É")
-                .replace("&trade;","™")
-                .replace("&euro;","€")
-                ;
+                s = HtmlUtils.unespace(s);
+
                 ParseBean parseBean = new ParseBean();
                 //读取xml文件到Document中
                 Document doc = DocumentHelper.parseText(s);
@@ -60,9 +44,12 @@ public class TestDict
 
                 //读取单词名和词性
                 String name = rootElement.element("h").getTextTrim();
-                String partOfSpeech = rootElement.element("p").attributeValue("p");
-                parseBean.name = name;
-                parseBean.partOfSpeech = partOfSpeech;
+                Element p = rootElement.element("p");
+                if(p != null){
+                    String partOfSpeech =  p.attributeValue("p");
+                    parseBean.name = name;
+                    parseBean.partOfSpeech = partOfSpeech;
+                }
 
                 List<Element> explanationList = rootElement.elements("n-g");
                 for (Element node : explanationList)
