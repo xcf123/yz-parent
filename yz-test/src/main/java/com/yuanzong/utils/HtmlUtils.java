@@ -4,6 +4,7 @@ import com.yuanzong.beans.*;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ import java.util.List;
  */
 public class HtmlUtils
 {
-
+    public static  List<String> sql = new ArrayList<>(1024);
     public static String getHtml(ParseBean word)
     {
         if (word == null)
@@ -51,6 +52,20 @@ public class HtmlUtils
         fillTitle(p, word);
         fillBody(p, word.explanationBeanList);
         return p.toString();
+    }
+
+    public static String recordInsertSql(ParseBean word)
+    {
+        if (word == null)
+        {
+            return "";
+        }
+        String name = word.name;
+        String html = getHtml(word);
+
+        String sql =  "insert into dict_oxford_ec (`key`,`value`)values ('" + name +"','" +html.replace("'","''")+ "')";
+        HtmlUtils.sql.add(sql);
+        return sql;
     }
 
 
