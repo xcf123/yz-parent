@@ -8,4 +8,5 @@ public class BaseBean{
     public List<SpeechDetailBean> speechDetailBeans;
 
 
+
 }
