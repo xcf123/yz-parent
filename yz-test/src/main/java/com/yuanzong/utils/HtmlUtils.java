@@ -61,7 +61,7 @@ public class HtmlUtils
             for (int i = 0; i < speechDetailBeans.size(); i++)
             {
                 if(i != 0){
-                    p.append("<b>▎</b>");
+                    p.append("<b>┃</b>");
                 }
                 SpeechDetailBean speechDetailBean = speechDetailBeans.get(i);
                 p.append("<b>");
@@ -79,8 +79,6 @@ public class HtmlUtils
     {
         if(sectionList != null){
             p.append("<span>：</span>");
-            p.append("<font face=\"serif\"><i >");
-
             for (int i = 0; i < sectionList.size(); i++)
             {
                 if(i!=0){
