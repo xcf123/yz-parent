@@ -26,7 +26,7 @@ public class TestDict
     {
         try
         {
-            File file = new File("D:\\Download\\2.xml");
+            File file = new File("C:\\Users\\xcf\\Desktop\\2.xml");
             List<String> utf8 = FileUtils.readLines(file, "utf8");
             for (String s : utf8)
             {
