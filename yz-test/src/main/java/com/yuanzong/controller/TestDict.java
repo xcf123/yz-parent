@@ -35,7 +35,7 @@ public class TestDict
                     continue;
                 }
                 s = HtmlUtils.unespace(s);
-                System.out.println(s);
+//                System.out.println(s);
                 ParseBean parseBean = new ParseBean();
                 //读取xml文件到Document中
                 Document doc = DocumentHelper.parseText(s);
@@ -57,17 +57,15 @@ public class TestDict
 
                 if (explanationList == null || explanationList.size() == 0)
                 {
-
-                    List<ExplanationBean> parse = parse(elements, explanationBeanList);
-                    parseBean.explanationBeanList = parse;
-
+                    ExplanationBean explanationBean = new ExplanationBean();
+                    fillBaseBean(elements, explanationBean);
+                    explanationBeanList.add(explanationBean);
                 }
                 else
                 {
                     for (Element node : explanationList)
                     {
                         ExplanationBean explanationBean = new ExplanationBean();
-                        List<BaseBean> baseBeanList = new ArrayList<>();
                         Element d = node.element("d");
                         //设置短语
                         if (d != null)
@@ -77,9 +75,11 @@ public class TestDict
                             explanationBean.englishPhrase = englishPhrase;
                             explanationBean.chinesePhrase = chinesePhrase;
                         }
+
                         List<Element> pareseNodeList = node.elements("sl-g");
                         //找出来sl-g
-                        explanationBeanList = parse(pareseNodeList, explanationBeanList);
+                        fillBaseBean(pareseNodeList,explanationBean);
+                        explanationBeanList.add(explanationBean);
                     }
                     parseBean.explanationBeanList = explanationBeanList;
                 }
@@ -115,9 +115,8 @@ public class TestDict
 
     }
 
-    public static List<ExplanationBean> parse(List<Element> elements, List<ExplanationBean> explanationBeanList)
+    public static void fillBaseBean(List<Element> elements, ExplanationBean explanationBean)
     {
-        ExplanationBean explanationBean = new ExplanationBean();
         List<BaseBean> baseBeanList = new ArrayList<>();
         for (Element base2 : elements)
         {
@@ -172,8 +171,6 @@ public class TestDict
             baseBeanList.add(baseBean);
         }
         explanationBean.baseBeanList = baseBeanList;
-        explanationBeanList.add(explanationBean);
-        return explanationBeanList;
     }
 }
 
