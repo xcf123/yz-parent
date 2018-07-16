@@ -75,7 +75,7 @@ public class HtmlUtils
         String name = word.name;
         String html = getHtml(word);
         System.out.println(html);
-        String sql =  "insert into dict_oxford_ec (`key`,`value`)values ('" + name +"','" +html.replace("'","''")+ "')";
+        String sql =  "insert into dict_oxford_ec (`key`,`value`)values ('" + name +"','" +html.replace("'","''")+ "');";
         HtmlUtils.sql.add(sql);
         return sql;
     }
@@ -89,12 +89,12 @@ public class HtmlUtils
             {
                 if (i != 0)
                 {
-                    p.append("<b>┃</b>");
+                    p.append("<b>┃&nbsp;&nbsp;</b>");
                 }
                 SpeechDetailBean speechDetailBean = speechDetailBeans.get(i);
                 p.append("<b>");
                 p.append(joinList(speechDetailBean.englishExplanation, ","));
-                p.append("</b>");
+                p.append("</b>&nbsp;&nbsp;");
                 p.append("<span>");
                 p.append(speechDetailBean.chineseExplanation);
                 p.append("</span>");
@@ -105,7 +105,7 @@ public class HtmlUtils
 
     private static void fillSection(StringBuilder p, List<Section> sectionList)
     {
-        if (sectionList != null)
+        if (sectionList != null && !sectionList.isEmpty())
         {
             p.append("<span>：</span>");
             for (int i = 0; i < sectionList.size(); i++)
@@ -155,7 +155,7 @@ public class HtmlUtils
                 if(baseBean.speech !=null){
                     p.append("<font face=\"serif\">•");
                     p.append(baseBean.speech);
-                    p.append(".</font>");
+                    p.append(".</font>&nbsp;&nbsp;");
                 }
                 fillSpeechDetailBean(p, baseBean.speechDetailBeans);
                 p.append("</p>");
@@ -175,11 +175,12 @@ public class HtmlUtils
                 if(explanationBeanList.size() > 1){
                     p.append("<b>");
                     p.append(i + 1);
-                    p.append("</b>");
+                    p.append("</b>&nbsp;&nbsp;");
                 }
 
                 if(explanationBean.englishPhrase!=null){
                     p.append(explanationBean.englishPhrase);
+                    p.append("&nbsp;&nbsp;");
                 }
                 if(explanationBean.chinesePhrase!=null){
                     p.append(explanationBean.chinesePhrase);
@@ -203,7 +204,7 @@ public class HtmlUtils
             p.append(word.shaped);
             p.append("</font> )");
         }
-        p.append("<small>");
+        p.append("<small>&nbsp;&nbsp;");
         p.append(word.partOfSpeech);
         p.append("</small>");
         p.append("</p>");
