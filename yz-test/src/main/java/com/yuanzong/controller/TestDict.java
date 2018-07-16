@@ -35,7 +35,7 @@ public class TestDict
                     continue;
                 }
                 s = HtmlUtils.unespace(s);
-                System.out.println(s);
+//                System.out.println(s);
                 ParseBean parseBean = new ParseBean();
                 //读取xml文件到Document中
                 Document doc = DocumentHelper.parseText(s);

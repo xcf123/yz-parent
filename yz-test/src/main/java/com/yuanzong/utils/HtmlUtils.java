@@ -74,7 +74,7 @@ public class HtmlUtils
         }
         String name = word.name;
         String html = getHtml(word);
-        System.out.println(html);
+//        System.out.println(html);
         String sql =  "insert into dict_oxford_ec (`key`,`value`)values ('" + name +"','" +html.replace("'","''")+ "');";
         HtmlUtils.sql.add(sql);
         return sql;
