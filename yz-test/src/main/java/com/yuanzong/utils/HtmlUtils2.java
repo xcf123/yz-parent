@@ -57,7 +57,7 @@ public class HtmlUtils2
         String name = word.englishName;
         String html = getHtml(word);
         System.out.println(html);
-        String sql =  "insert into dict_oxford_ogbac (`key`,`value`)values ('" + name +"','" +html.replace("'","''")+ "')";
+        String sql =  "insert into dict_oxford_ogbac (`key`,`value`)values ('" + name.replace("'",".") +"','" +html.replace("'",".")+ "')"+";";
         HtmlUtils2.cSql.add(sql);
         return sql;
     }
@@ -114,7 +114,7 @@ public class HtmlUtils2
                         p.append("</font>");
                     }
                 }
-                p.append("</font>");
+
             }
         }
         p.append("</p>");
