@@ -13,6 +13,8 @@ import java.util.List;
 
 /*
  * 用于拼接解释
+ *
+ <p><big>单词<big></p>
  <p>  <b>单词加粗</b>
  <font >音标 </font>
  <small>词性</small>
@@ -172,6 +174,14 @@ public class HtmlUtils2
 
     private static void fillTitle(StringBuilder p, CParseBean word)
     {
+        p.append("<p>");
+        p.append("<big>");
+        p.append("<b>");
+        p.append(word.englishName+"  ");
+        p.append("</b>");
+        p.append("</big>");
+        p.append("</p>");
+
         p.append("<p>");
         p.append("<b>");
         p.append(word.englishName+"  ");

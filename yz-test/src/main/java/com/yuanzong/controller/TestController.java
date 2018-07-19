@@ -7,16 +7,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.net.URISyntaxException;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author xiechaofeng
@@ -57,4 +57,26 @@ public class TestController {
             e.printStackTrace();
         }
     }
+    @RequestMapping(value = "upload")
+    public String upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException
+    {
+//        String dirPath=request.getServletContext().getRealPath("/upload");
+//        File dirFile=new File(dirPath);
+//        if(!dirFile.exists()){
+//            dirFile.mkdirs();
+//        }
+//        String fileName= UUID.randomUUID().toString().replace("-","");
+        ByteArrayInputStream bis=new ByteArrayInputStream(file.getBytes());
+        byte[] b=new byte[1024];
+        ByteArrayOutputStream bos=new ByteArrayOutputStream();
+        int len=0;
+        while((len=bis.read(b))!=-1){
+            bos.write(b);
+        }
+        System.out.println(bos.toByteArray());
+        bos.close();
+        bis.close();
+        return "success";
+    }
+
 }
