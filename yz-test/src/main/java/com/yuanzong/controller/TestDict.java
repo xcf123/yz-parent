@@ -3,11 +3,11 @@ package com.yuanzong.controller;
 import com.yuanzong.beans.*;
 import com.yuanzong.utils.HtmlUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,8 +26,31 @@ public class TestDict
     {
         try
         {
-            File file = new File("C:\\Users\\xcf\\Desktop\\2.xml");
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            JFileChooser fc = new JFileChooser("D:");
+            fc.setDialogTitle("选择牛津词典的xml文件");
+            //是否可多选
+            fc.setMultiSelectionEnabled(false);
+            //选择模式，可选择文件和文件夹
+            //fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            //		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            //设置是否显示隐藏文件
+            fc.setAcceptAllFileFilterUsed(false);
+
+
+            int returnValue = fc.showOpenDialog(null);
+            File file = null;
+            if (returnValue == JFileChooser.APPROVE_OPTION)
+            {
+                file = fc.getSelectedFile();
+            }else{
+                System.err.println("没有选择文件，退出");
+                return;
+            }
+
             List<String> utf8 = FileUtils.readLines(file, "utf8");
+            int i = 0;
             for (String s : utf8)
             {
                 if (!s.startsWith("<entry"))
@@ -35,7 +58,8 @@ public class TestDict
                     continue;
                 }
                 s = HtmlUtils.unespace(s);
-//                System.out.println(s);
+                System.out.print("->");
+                System.out.print(i++);
                 ParseBean parseBean = new ParseBean();
                 //读取xml文件到Document中
                 Document doc = DocumentHelper.parseText(s);
@@ -81,8 +105,10 @@ public class TestDict
                         fillBaseBean(pareseNodeList,explanationBean);
                         explanationBeanList.add(explanationBean);
                     }
-                    parseBean.explanationBeanList = explanationBeanList;
                 }
+                parseBean.explanationBeanList = explanationBeanList;
+
+
                 Element xr = rootElement.element("xr");
                 if(xr !=null){
                     parseBean.note = xr.element("xh").getTextTrim();
