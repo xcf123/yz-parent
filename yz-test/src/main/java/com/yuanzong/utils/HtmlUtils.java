@@ -138,7 +138,7 @@ public class HtmlUtils
             {
                 sb.append(s);
             }
-            sb.append(englishExplanation.get(0));
+            sb.append(englishExplanation.get(i));
         }
         return sb;
     }

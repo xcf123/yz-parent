@@ -25,7 +25,7 @@ public class SqlUtils
             return "";
         }
         System.out.println(key +"----"+value);
-        String sql =  "insert into dict_century(`key`,`value`)values ('" + key.replace("'",".") +"','" +value.replace("'",".")+ "')"+";";
+        String sql =  "insert into dict_chinese(`key`,`value`)values ('" + key.replace("'",".").toLowerCase() +"','" +value.replace("'",".")+ "')"+";";
         SqlUtils.sql.add(sql);
         return sql;
     }
