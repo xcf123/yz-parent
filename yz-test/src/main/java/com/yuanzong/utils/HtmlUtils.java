@@ -52,8 +52,41 @@ public class HtmlUtils
         StringBuilder p = new StringBuilder(1024);
         fillTitle(p, word);
         fillBody(p, word.explanationBeanList);
+        fillPvs(p,word.pvsBeanList);
         fillNote(p, word.note);
         return p.toString();
+    }
+
+    private static void fillPvs(StringBuilder p, List<PvsBean> pvsBeanList)
+    {
+        if (pvsBeanList != null)
+        {
+            for (int i = 0; i < pvsBeanList.size(); i++)
+            {
+                PvsBean pvsBean = pvsBeanList.get(i);
+                ExplanationBean explanationBean = pvsBean.explanationBean;
+                p.append("<font face=\"san-serif\">" );
+                if(!StringUtils.isEmpty(pvsBean.psvExplanation)){
+                    p.append("<b>");
+                    p.append("PHR V&nbsp;&nbsp;"+pvsBean.psvExplanation);
+                    p.append("</b>&nbsp;&nbsp;");
+                }
+
+                if(explanationBean.englishPhrase!=null){
+                    p.append(explanationBean.englishPhrase);
+                    p.append("&nbsp;&nbsp;");
+                }
+                if(explanationBean.chinesePhrase!=null){
+                    p.append(explanationBean.chinesePhrase);
+                    p.append("&nbsp;&nbsp;");
+                }
+                if(explanationBean.explainNote!=null){
+                    p.append(explanationBean.explainNote);
+                }
+                p.append("</font>");
+                fillBaseBean(p, explanationBean.baseBeanList);
+            }
+        }
     }
 
     private static void fillNote(StringBuilder p, String note)
@@ -61,9 +94,11 @@ public class HtmlUtils
         if(note == null){
             return;
         }
-        p.append("<p>⇨Note at ");
-        p.append(note);
-        p.append("</p>");
+        if(!note.startsWith("⇨see also")){
+            p.append("<p> ");
+            p.append(note);
+            p.append("</p>");
+        }
     }
 
     public static String recordInsertSql(ParseBean word)
@@ -95,10 +130,31 @@ public class HtmlUtils
                 p.append("<b>");
                 p.append(joinList(speechDetailBean.englishExplanation, ","));
                 p.append("</b>&nbsp;&nbsp;");
+                if(!StringUtils.isEmpty(speechDetailBean.note)){
+                    p.append("("+speechDetailBean.note+")&nbsp;");
+                }
+                if(!StringUtils.isEmpty(speechDetailBean.englishNote) || !StringUtils.isEmpty(speechDetailBean.chineseNote)){
+                    p.append("(");
+                    if(!StringUtils.isEmpty(speechDetailBean.englishNote)){
+                        p.append(speechDetailBean.englishNote+"&nbsp;");
+                    }
+                    if(!StringUtils.isEmpty(speechDetailBean.chineseNote)){
+                        p.append(speechDetailBean.chineseNote+"&nbsp;");
+                    }
+                    p.append(")");
+                }
+                if(!StringUtils.isEmpty(speechDetailBean.otherUse)){
+                    p.append("<i>");
+                    p.append("("+speechDetailBean.otherUse+")");
+                    p.append("</i>&nbsp;&nbsp;");
+                }
                 p.append("<span>");
                 p.append(speechDetailBean.chineseExplanation);
                 p.append("</span>");
                 fillSection(p, speechDetailBean.sectionList);
+                if(!StringUtils.isEmpty(speechDetailBean.finalNote)){
+                    p.append("&nbsp;&nbsp;"+speechDetailBean.finalNote);
+                }
             }
         }
     }
@@ -154,7 +210,8 @@ public class HtmlUtils
                 p.append("<p>&nbsp;&nbsp;");
                 if(baseBean.speech !=null){
                     p.append("<font face=\"serif\">•");
-                    p.append(baseBean.speech);
+                    String speech=baseBean.speech;
+                    p.append(speech.toUpperCase());
                     p.append(".</font>&nbsp;&nbsp;");
                 }
                 fillSpeechDetailBean(p, baseBean.speechDetailBeans);
@@ -184,6 +241,10 @@ public class HtmlUtils
                 }
                 if(explanationBean.chinesePhrase!=null){
                     p.append(explanationBean.chinesePhrase);
+                    p.append("&nbsp;&nbsp;");
+                }
+                if(explanationBean.explainNote!=null){
+                    p.append(explanationBean.explainNote);
                 }
                 p.append("</font>");
                 fillBaseBean(p, explanationBean.baseBeanList);
@@ -200,12 +261,45 @@ public class HtmlUtils
         p.append("</big></font>");
         if (!StringUtils.isEmpty(word.shaped))
         {
-            p.append("(also <font>");
+            p.append("&nbsp;("+"<i>also&nbsp;</i>"+ "<font>");
             p.append(word.shaped);
             p.append("</font> )");
         }
+        if(!StringUtils.isEmpty(word.englishVoice)){
+            p.append("&nbsp;("+"<i>BrE<i>&nbsp;"+"also <font>");
+            p.append(word.englishVoice);
+            p.append("</font> )");
+        }
         p.append("<small>&nbsp;&nbsp;");
-        p.append(word.partOfSpeech);
+        p.append("<i>");
+        if(word.partOfSpeechList!=null && word.partOfSpeechList.size()!=0){
+            for (String s : word.partOfSpeechList)
+            {
+                if(s.equals("v")){
+                    s="verb";
+                }else if(s.equals("n")){
+                    s="noun";
+                }
+                p.append(s+"&nbsp;&nbsp;");
+            }
+        }
+        if(!StringUtils.isEmpty(word.way)){
+            p.append("&nbsp;&nbsp;");
+            p.append("("+word.way+")");
+        }
+
+        if(!StringUtils.isEmpty(word.note)){
+            if(word.note.startsWith("⇨see also")){
+                p.append("&nbsp;&nbsp;"+word.note);
+            }
+        }
+
+        if(!StringUtils.isEmpty(word.other)){
+            p.append("<i>");
+            p.append("("+word.other+")");
+            p.append("</i>");
+        }
+        p.append("</i>");
         p.append("</small>");
         p.append("</p>");
     }
@@ -214,6 +308,7 @@ public class HtmlUtils
     {
         return s.replace("&lsquo;", "‘")
                 .replace("&rsquo;", "’")
+                .replace("&eth;", "ð")
                 .replace("&hellip;", "…")
                 .replace("&cw;", "·")
                 .replace("&mdash;", "—")
@@ -227,7 +322,7 @@ public class HtmlUtils
                 .replace("&eacute;", "É")
                 .replace("&trade;", "™")
                 .replace("&euro;", "€")
-                .replace("&ecirc;", "Ê")
+                .replace("&ecirc;", "ê")
                 .replace("&atilde;", "ã")
                 .replace("&check;", " ")
                 .replace("&egrave;", "è")
@@ -235,27 +330,27 @@ public class HtmlUtils
                 .replace("&acirc;", "Â")
                 .replace("&aacute;", "á")
                 .replace("&agrave;", "À")
-                .replace("&sub2;", "-")
-                .replace("&oacute;", "Ó")
+                .replace("&sub2;", "₂")
+                .replace("&oacute;", "ó")
                 .replace("&iuml;", "ï")
-                .replace("&ntilde;", "Ñ")
+                .replace("&ntilde;", "ñ")
                 .replace("&iacute;", "í")
                 .replace("&Eacute;", "É")
-                .replace("&uuml;", "Ü")
+                .replace("&uuml;", "ü")
                 .replace("&ugrave;", "ù")
                 .replace("&ocirc;", "Ô")
                 .replace("&ast;","*")
                 .replace("<gl>","(=")
                 .replace("</gl>",")")
-                .replace("&s;","")
-                .replace("&p;","")
+                .replace("&s;","ˌ")
+                .replace("&p;","ˈ")
                 .replace("&ldquo;","“")
                 .replace("&rdquo;","”")
                 .replace("<da>","")
                 .replace("</da>","")
                 .replace("&ccedil;","ç")
                 .replace("&frac12;","½")
-                .replace("&ouml;","ö")
+                .replace("&ouml;","Ö")
                 .replace("&uacute;","ú")
                 .replace("&sup2;","2")
                 .replace("&rcaron;","ř")
@@ -270,18 +365,49 @@ public class HtmlUtils
                 .replace("&ieth;","ð")
                 .replace("&AElig;","Æ")
                 .replace("&alpha;","α")
-                .replace("&amp;","æ")
                 .replace("&beta;","β")
-                .replace("&AElig;","Æ")
-                .replace("&eth;","ð")
-                .replace("&gamma;","ð")
-                .replace("<db>","")
-                .replace("</db>","")
-                .replace("<di>","")
-                .replace("</di >","")
-                .replace("</di>","")
-                .replace("<dab>","(")
-                .replace("</dab>",")")
+                .replace("&gamma;","γ")
+
+                .replace("<db>","|++")
+                .replace("</db>","++|")
+                .replace("<di>","|--")
+                .replace("</di>","--|")
+                .replace("<dt>","|--")
+                .replace("</dt>","--|")
+                .replace("<dab>"," (")
+                .replace("</dab>",") ")
+                .replace("<ei>","")
+                .replace("</ei>","")
+                .replace("<da>","")
+                .replace("</da>","")
+                .replace("<a>","|++")
+                .replace("</a>","++|")
+                .replace("<xhm pr=\"y\">","||+")
+                .replace("<xhm>","||+")
+                .replace("</xhm>","+||")
                 ;
+    }
+
+    public static String phoneticParse(String symbol)
+    {
+        return symbol.replace("3","ə")
+                     .replace("\"","ˈ")
+                     .replace("%","ˈ")
+                     .replace("&","æ")
+                     .replace(":","ː")
+                     .replace("@","ə")
+                     .replace("D","ð")
+                     .replace("3","ə")
+                     .replace("E","ə")
+                     .replace("I","ɪ")
+                     .replace("N","ŋ")
+                     .replace("O","ɔ")
+                     .replace("Q","ɒ")
+                     .replace("S","ʃ")
+                     .replace("T","θ")
+                     .replace("U","ʊ")
+                     .replace("V","ʌ")
+                     .replace("Z","ʒ");
+
     }
 }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="plugins/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="plugins/ueditor/ueditor.all.js"></script>
+</head>
+<body>
+    <script type="text/plain" id="example" name="myEditor">
+                <p>请输入内容</p>
+    </script>
+</body>
+<script>
+
+    $(function() {
+        var example = UE.getEditor('example', {
+            initialFrameWidth: 540,//自定义宽度
+            initialFrameHeight: 100,//自定义高度
+            elementPathEnabled: false,//是否显示元素位置
+            wordCount: false, //是否开启字数统计
+            maximumWords: 500, //允许的最大字符数
+            toolbars: [//工具框内容设置
+                ['undo', 'redo',//'insertvideo',
+                    'underline', //下划线
+                    'italic', //斜体
+                    'bold', //加粗
+                    'forecolor', //字体颜色
+                    'insertimage', 'kityformula']
+            ]
+        });
+        add(example);
+    });
+    /** 编辑器添加事件*/
+    function add(uediter, tag){
+
+        uediter.addListener('focus', function(){
+            var content = uediter.getContent();
+            if(content === '<p>请输入内容</p>'){
+                uediter.setContent('<p></p>');
+            }
+        });
+    }
+</script>
+</html>

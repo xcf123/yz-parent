@@ -13,12 +13,27 @@ public class ParseBean{
      */
     public String shaped;
     /**
+     * 英式发音
+     */
+    public String englishVoice;
+    /**
+     * 其他信息
+     */
+    public String other;
+    /**
      * 单词词性
      */
-    public String  partOfSpeech;
+    public List<String>  partOfSpeechList;
+
+    /**
+     * 用法 如way of achieving sth 方法
+     */
+    public String way;
 
     public String note;
 
     public List<ExplanationBean> explanationBeanList;
+
+    public List<PvsBean> pvsBeanList;
 
 }

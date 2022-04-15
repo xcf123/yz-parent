@@ -11,6 +11,11 @@ public class ExplanationBean{
      * 英文短语翻译
      */
     public String chinesePhrase;
+
+    /**
+     * 解释的标注
+     */
+    public String explainNote;
     /**
      * map<搭配的词性,bean>
      */

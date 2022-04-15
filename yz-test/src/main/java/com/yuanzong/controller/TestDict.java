@@ -3,6 +3,7 @@ package com.yuanzong.controller;
 import com.yuanzong.beans.*;
 import com.yuanzong.utils.HtmlUtils;
 import org.apache.commons.io.FileUtils;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -27,7 +28,7 @@ public class TestDict
         try
         {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            JFileChooser fc = new JFileChooser("D:");
+            JFileChooser fc = new JFileChooser("C:");
             fc.setDialogTitle("选择牛津词典的xml文件");
             //是否可多选
             fc.setMultiSelectionEnabled(false);
@@ -58,27 +59,43 @@ public class TestDict
                     continue;
                 }
                 s = HtmlUtils.unespace(s);
-                System.out.print("->");
-                System.out.print(i++);
                 ParseBean parseBean = new ParseBean();
                 //读取xml文件到Document中
                 Document doc = DocumentHelper.parseText(s);
                 //获取xml文件的根节点
                 Element rootElement = doc.getRootElement();
                 List<ExplanationBean> explanationBeanList = new ArrayList<>();
-
+                System.out.println("->"+i);
+                i++;
                 //读取单词名和词性
                 String name = rootElement.element("h").getTextTrim();
-                Element p = rootElement.element("p");
+                List<Element> pes = rootElement.elements("p");
                 parseBean.name = name;
-                if (p != null)
+                if (pes != null && pes.size()!=0)
                 {
-                    parseBean.partOfSpeech = p.attributeValue("p");
+                    List<String> partOfSpeechList=new ArrayList<>();
+                    for (Element p : pes)
+                    {
+                        String partOfSpeech = p.attributeValue("p");
+                        partOfSpeechList.add(partOfSpeech);
+                    }
+                    parseBean.partOfSpeechList=partOfSpeechList;
+                }
+
+                //单词用法
+                Element d1 = rootElement.element("d");
+                if(d1!=null){
+                    String text = d1.getText();
+                    Element chn = d1.element("chn");
+                    if(chn!=null){
+                        text+=" "+chn.getText();
+                    }
+                    parseBean.way=text;
                 }
 
                 List<Element> explanationList = rootElement.elements("n-g");
                 List<Element> elements = rootElement.elements("sl-g");
-
+                List<Element> pvsg = rootElement.elements("pvs-g");
                 if (explanationList == null || explanationList.size() == 0)
                 {
                     ExplanationBean explanationBean = new ExplanationBean();
@@ -99,6 +116,22 @@ public class TestDict
                             explanationBean.englishPhrase = englishPhrase;
                             explanationBean.chinesePhrase = chinesePhrase;
                         }
+                        Element xr = node.element("xr");
+                        if(xr !=null){
+                            String xt = xr.attribute("xt").getValue();
+                            String note="";
+                            if(xt.equals("page")){
+                                note="⇨Special page at ";
+                            }else if(xt.equals("see")){
+                                note="⇨see ";
+                            }else if(xt.equals("seealso")){
+                                note="⇨see also ";
+                            }
+                            else {
+                                note="⇨NOTE at ";
+                            }
+                            explanationBean.explainNote=note+xr.element("xh").getTextTrim().toUpperCase();
+                        }
 
                         List<Element> pareseNodeList = node.elements("sl-g");
                         //找出来sl-g
@@ -106,21 +139,68 @@ public class TestDict
                         explanationBeanList.add(explanationBean);
                     }
                 }
+
+                //其他 pvs
+                List<PvsBean> pvsBeanList=new ArrayList<>();
+                if(pvsg!=null && pvsg.size()!=0){
+
+                    for (Element element : pvsg)
+                    {
+                        PvsBean pvsBean=new PvsBean();
+                        ExplanationBean explanationBean = new ExplanationBean();
+                        String pv = element.element("pv").getText();
+                        pvsBean.psvExplanation=pv;
+
+                        List<Element> slg1 = element.elements("sl-g");
+                        //找出来sl-g
+                        fillBaseBean(slg1,explanationBean);
+                        pvsBean.explanationBean=explanationBean;
+                        pvsBeanList.add(pvsBean);
+                    }
+                }
+                parseBean.pvsBeanList=pvsBeanList;
                 parseBean.explanationBeanList = explanationBeanList;
 
 
                 Element xr = rootElement.element("xr");
                 if(xr !=null){
-                    parseBean.note = xr.element("xh").getTextTrim();
+                    String xt = xr.attribute("xt").getValue();
+                    String note="";
+                    if(xt.equals("page")){
+                        note="⇨Special page at ";
+                    }else if(xt.equals("see")){
+                         note="⇨see ";
+                    }else if(xt.equals("seealso")){
+                        note="⇨see also ";
+                    }
+                    else {
+                         note="⇨NOTE at ";
+                    }
+                    parseBean.note =note+ xr.element("xh").getTextTrim().toUpperCase();
                 }
+                //读取异形词
                 Element vsG = rootElement.element("vs-g");
                 if(vsG !=null){
                     Element v1 = vsG.element("v");
+                    Element vs = vsG.element("vs");
                     if(v1!=null){
                         parseBean.shaped = v1.getTextTrim();
+                    }else if(vs!=null){
+                        parseBean.shaped = vs.getTextTrim();
                     }
                 }
+                //英式发音
+                Element he = rootElement.element("he");
+                if(he!=null){
+                    parseBean.englishVoice=he.getText();
+                }
 
+                //其他信息
+                Element r = rootElement.element("r");
+                if(r!=null){
+                    parseBean.other=r.getTextTrim();
+                }
+               // System.out.println(HtmlUtils.getHtml(parseBean));
                 HtmlUtils.recordInsertSql(parseBean);
             }
         }
@@ -166,10 +246,50 @@ public class TestDict
                     Map<String, String> exampleExplanation = new HashMap<>();
                     String text = clElement.getTextTrim();
                     englishExplanation.add(text);
+                    Element note = clElement.element("note");
+                    if(note!=null){
+                        speechDetailBean.note=note.getTextTrim();
+                    }
                     Element chn = clElement.element("chn");
                     if (chn != null)
                     {
                         chineseExplanation = chn.getTextTrim();
+                    }
+                }
+                //其他用途
+                Element r = speechDetail.element("r");
+                if(r!=null){
+                    speechDetailBean.otherUse=r.getTextTrim();
+                }
+                //针对单词的中英文标注
+                Element note = speechDetail.element("note");
+                if(note!=null){
+                    Attribute nt = note.attribute("nt");
+                    if(nt!=null){
+                        String value = nt.getValue();
+                        if(value.equals("afterxr")){
+                            String noteFor="";
+                            Element xr = speechDetail.element("xr");
+                            String xt = xr.attribute("xt").getValue();
+                            if(xt.equals("page")){
+                                noteFor="⇨Special page at ";
+                            }else if(xt.equals("see")){
+                                noteFor="⇨see ";
+                            }else if(xt.equals("seealso")){
+                                noteFor="⇨see also ";
+                            }
+                            else {
+                                noteFor="⇨NOTE at ";
+                            }
+                            noteFor+=xr.getText();
+                            speechDetailBean.finalNote=noteFor+"("+note.getText()+")";
+                        }else{
+                            speechDetailBean.englishNote=note.getText();
+                        }
+                        Element chn = note.element("chn");
+                        if(chn!=null){
+                            speechDetailBean.chineseNote=chn.getText();
+                        }
                     }
                 }
 

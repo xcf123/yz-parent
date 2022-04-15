@@ -12,6 +12,22 @@ public class CEnglishBaseBean {
      * 着重部分，缩写全称 ff标签
      */
     public String abbreviation;
+
+    /**
+     * 全名
+     */
+    public String entireName;
+    /**
+     * 语法信息[C]
+     */
+    public List<String> squareBracketsList;
+
+    /**
+     * 注解 例如(usu disapprov)
+     */
+
+    public  String annotation;
+
     /**
      * 括号部分 ds标签
      */
@@ -29,5 +45,10 @@ public class CEnglishBaseBean {
      * 英语例句
      */
     public List<String> exampleSentenceList;
+
+    /**
+     * 歌词
+     */
+    public List<String> lyricsList;
 
 }

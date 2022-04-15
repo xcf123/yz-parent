@@ -9,9 +9,28 @@ import java.util.List;
  */
 public class CParseBean {
     /**
+     * 单词前缀 如Margaret Beckett 中的Margaret
+     */
+    public String beforeName;
+
+    /**
      * 单词英文名
      */
     public String englishName;
+    /**
+     * 标记 英文名是否需要斜体
+     */
+    public String flag;
+
+    /**
+     * ab  可能是简称
+     */
+    public String ab;
+
+    /**
+     * 别称解释
+     */
+    public String anotherNameExp;
     /**
      * 词性
      */
@@ -20,6 +39,24 @@ public class CParseBean {
      * 单词音标
      */
     public List<String> phoneticSymbolList;
+
+    /**
+     * 美式音标
+     */
+    public List<String> amPhoneticSymbolList;
+
+    /**
+     * 美式还是英式
+     */
+    public String pronunciation;
+
+    /**
+     * 其他名字
+     */
+    public String anotherName;
+
+
+
     /**
      * 开头方括号部分 gr标签
      */
@@ -37,6 +74,8 @@ public class CParseBean {
      *
      */
     public List<CChineseBaseBean> cChineseBaseBeanList;
+
+    public DrgBean drgBean;
 
     @Override
     public String toString() {

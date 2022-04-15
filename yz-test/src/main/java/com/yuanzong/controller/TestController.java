@@ -33,6 +33,12 @@ public class TestController {
         model.put("descrip", "adam");
         return "demo";
     }
+
+    @RequestMapping(value = "/file")
+    public String file(Map<String, Object> model){
+        return "file";
+    }
+
     @RequestMapping(value = "out")
     public void put(@RequestParam String name){
         try {

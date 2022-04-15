@@ -9,6 +9,10 @@ import java.util.List;
  */
 public class CChineseBaseBean {
     /**
+     * 加粗部分
+     */
+    public String name;
+    /**
      * 翻译详见部分
      */
     public List<String> chineseSeeDetailList;
@@ -20,4 +24,10 @@ public class CChineseBaseBean {
      * 翻译部分中英例句
      */
     public List<CSection> cSectionList;
+
+    /**
+     * 补充
+     */
+    public List<String> supplementList;
+
 }
